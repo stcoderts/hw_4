@@ -2,18 +2,20 @@
 
 A new Flutter project created with FlutLab - https://flutlab.io
 
-## Getting Started
+## Screens
 
-A few resources to get you started if this is your first Flutter project:
+# Welcome Screen:
 
-- https://flutter.dev/docs/get-started/codelab
-- https://flutter.dev/docs/cookbook
+Displays a tutorial on the first launch (using SharedPreferences).
+Tutorial is shown only on the first launch.
 
-For help getting started with Flutter, view our
-https://flutter.dev/docs, which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# User List Screen:
 
-## Getting Started: FlutLab - Flutter Online IDE
+Fetches user information from the Random User Generator API.
+Displays user information in a list.
+Provides buttons to fetch more users from the API and store selected data into a local SQLite database.
 
-- How to use FlutLab? Please, view our https://flutlab.io/docs
-- Join the discussion and conversation on https://flutlab.io/residents
+# Local User List Screen:
+
+Reads user information from the local SQLite database.
+Displays user information in a list.
