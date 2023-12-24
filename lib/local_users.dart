@@ -46,9 +46,13 @@ class _LocalUserListScreenState extends State<LocalUserListScreen> {
                 itemCount: localUserList.length,
                 itemBuilder: (context, index) {
                   final user = localUserList[index];
-                  return ListTile(
-                    title: Text(user.name ?? ''),
-                    subtitle: Text(user.email ?? ''),
+                  return FadeInAnimation(
+                    delay:
+                        Duration(milliseconds: index * 100), // Adjust the delay
+                    child: ListTile(
+                      title: Text(user.name ?? ''),
+                      subtitle: Text(user.email ?? ''),
+                    ),
                   );
                 },
               ),
@@ -57,5 +61,51 @@ class _LocalUserListScreenState extends State<LocalUserListScreen> {
         ),
       ),
     );
+  }
+}
+
+class FadeInAnimation extends StatefulWidget {
+  final Duration delay;
+  final Widget child;
+
+  FadeInAnimation({required this.delay, required this.child});
+
+  @override
+  _FadeInAnimationState createState() => _FadeInAnimationState();
+}
+
+class _FadeInAnimationState extends State<FadeInAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+
+    Future.delayed(widget.delay, () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: widget.child,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
