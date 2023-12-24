@@ -50,7 +50,6 @@ class _UserListScreenState extends State<UserListScreen> {
       print('Failed to fetch more users. Status code: ${response.statusCode}');
     }
   }
-
   Future<void> storeSelectedUser(Map<String, dynamic> selectedUser) async {
     int result = await databaseHelper.saveSelectedUser(selectedUser);
 
@@ -82,12 +81,21 @@ class _UserListScreenState extends State<UserListScreen> {
                 itemCount: userList.length,
                 itemBuilder: (context, index) {
                   final user = userList[index];
-                  return ListTile(
-                    title: Text(user['name']['first'] ?? ''),
-                    subtitle: Text(user['email'] ?? ''),
-                    onTap: () {
-                      storeSelectedUser(user);
-                    },
+                  return FadeInAnimation(
+                    delay: Duration(milliseconds: index * 100),
+                    child: ListTile(
+                      title: Text(user['name']['first'] ?? ''),
+                      subtitle: Text(user['email'] ?? ''),
+                      onTap: () {
+                        storeSelectedUser(user);
+                      },
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          storeSelectedUser(user);
+                        },
+                        child: Text('Save Selected'),
+                      ),
+                    ),
                   );
                 },
               ),
@@ -114,5 +122,51 @@ class _UserListScreenState extends State<UserListScreen> {
         ),
       ),
     );
+  }
+}
+
+class FadeInAnimation extends StatefulWidget {
+  final Duration delay;
+  final Widget child;
+
+  FadeInAnimation({required this.delay, required this.child});
+
+  @override
+  _FadeInAnimationState createState() => _FadeInAnimationState();
+}
+
+class _FadeInAnimationState extends State<FadeInAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+
+    Future.delayed(widget.delay, () {
+      if (mounted) {
+        _controller.forward();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _animation,
+      child: widget.child,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
